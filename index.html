@@ -1,1 +1,66 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hay Sona AI</title>
+<style>
+body {
+  background: #10152b;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+  padding: 25px;
+}
+h1 { color: #00e5ff; }
+button {
+  background: #00bcd4;
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  margin: 8px;
+  font-size: 17px;
+}
+#answer { margin-top: 25px; }
+</style>
+</head>
+<body>
 
+<h1>🌸 Hay Sona AI 🌸</h1>
+<p>नमस्ते Hari sar! मैं आपकी AI सहायक हूँ।</p>
+
+<button onclick="speak()">🔊 बोलो</button>
+<button onclick="listen()">🎤 बात करो</button>
+
+<div id="answer">आपकी सहायक तैयार है।</div>
+
+<script>
+function speak() {
+ let msg = new SpeechSynthesisUtterance(
+ "नमस्ते Hari sar! मैं Hay Sona AI हूँ।"
+ );
+ msg.lang = "hi-IN";
+ speechSynthesis.speak(msg);
+}
+
+function listen() {
+ let recognition = new (window.SpeechRecognition ||
+ window.webkitSpeechRecognition)();
+
+ recognition.lang = "hi-IN";
+ recognition.onresult = function(event) {
+  let text = event.results[0][0].transcript;
+  document.getElementById("answer").innerText = text;
+  let msg = new SpeechSynthesisUtterance(
+   "आपने कहा " + text
+  );
+  msg.lang = "hi-IN";
+  speechSynthesis.speak(msg);
+ };
+ recognition.start();
+}
+</script>
+
+</body>
+</html>
