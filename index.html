@@ -2,63 +2,100 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hay Sona AI</title>
 <style>
 body {
-  background: #10152b;
-  color: white;
-  font-family: Arial;
-  text-align: center;
-  padding: 25px;
+ background:#10152b;
+ color:white;
+ font-family:Arial;
+ text-align:center;
+ padding:20px;
 }
-h1 { color: #00e5ff; }
+h1 {color:#00e5ff}
 button {
-  background: #00bcd4;
-  color: white;
-  padding: 15px;
-  border: none;
-  border-radius: 12px;
-  margin: 8px;
-  font-size: 17px;
+ background:#00bcd4;
+ color:white;
+ padding:14px;
+ border:0;
+ border-radius:12px;
+ margin:7px;
+ font-size:17px;
 }
-#answer { margin-top: 25px; }
+input {
+ padding:14px;
+ width:85%;
+ border-radius:10px;
+}
+#answer {
+ background:#202b48;
+ padding:18px;
+ margin-top:20px;
+ border-radius:12px;
+}
 </style>
 </head>
 <body>
 
 <h1>🌸 Hay Sona AI 🌸</h1>
-<p>नमस्ते Hari sar! मैं आपकी AI सहायक हूँ।</p>
+<p>नमस्ते Hari sar! मैं आपकी सहायक हूँ।</p>
 
-<button onclick="speak()">🔊 बोलो</button>
-<button onclick="listen()">🎤 बात करो</button>
+<input id="question" placeholder="अपना सवाल लिखिए">
+<br>
+<button onclick="ask()">पूछें</button>
+<button onclick="listen()">🎤 बोलकर पूछें</button>
+<button onclick="speak()">🔊 बोलें</button>
 
-<div id="answer">आपकी सहायक तैयार है।</div>
+<div id="answer">Hay Sona तैयार है!</div>
 
 <script>
+let reply = "नमस्ते Hari sar! मैं Hay Sona AI हूँ।";
+
+function ask() {
+ let q = document.getElementById("question").value.toLowerCase();
+ if(q.includes("नमस्ते") || q.includes("hello") || q.includes("हेलो")) {
+ reply = "नमस्ते Hari sar! कैसे हैं आप?";
+ }
+ else if(q.includes("नाम")) {
+ reply = "मेरा नाम Hay Sona AI है।";
+ }
+ else if(q.includes("समय")) {
+ reply = "अभी समय है " + new Date().toLocaleTimeString("hi-IN");
+ }
+ else if(q.includes("तारीख") || q.includes("दिनांक")) {
+ reply = "आज की तारीख है " + new Date().toLocaleDateString("hi-IN");
+ }
+ else if(q.includes("कैसी हो")) {
+ reply = "मैं अच्छी हूँ Hari sar!";
+ }
+ else {
+ reply = "Hari sar, यह सवाल अच्छा है। कृपया थोड़ा और बताइए।";
+ }
+ document.getElementById("answer").innerText = reply;
+ speak();
+}
+
 function speak() {
- let msg = new SpeechSynthesisUtterance(
- "नमस्ते Hari sar! मैं Hay Sona AI हूँ।"
- );
+ let msg = new SpeechSynthesisUtterance(reply);
  msg.lang = "hi-IN";
+ msg.pitch = 1.2;
  speechSynthesis.speak(msg);
 }
 
 function listen() {
- let recognition = new (window.SpeechRecognition ||
- window.webkitSpeechRecognition)();
-
- recognition.lang = "hi-IN";
- recognition.onresult = function(event) {
-  let text = event.results[0][0].transcript;
-  document.getElementById("answer").innerText = text;
-  let msg = new SpeechSynthesisUtterance(
-   "आपने कहा " + text
-  );
-  msg.lang = "hi-IN";
-  speechSynthesis.speak(msg);
+ let R = window.SpeechRecognition || window.webkitSpeechRecognition;
+ if(!R) {
+ alert("इस ब्राउज़र में Voice Recognition उपलब्ध नहीं है।");
+ return;
+ }
+ let rec = new R();
+ rec.lang = "hi-IN";
+ rec.onresult = function(e) {
+ document.getElementById("question").value =
+ e.results[0][0].transcript;
+ ask();
  };
- recognition.start();
+ rec.start();
 }
 </script>
 
